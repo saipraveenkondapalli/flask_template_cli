@@ -8,3 +8,4 @@ To install Flask Template CLI, you can use pip:
 
 ```bash
 pip install flask_template_cli
+```
