@@ -12,9 +12,17 @@ def routes_gen(project):
 
 
 def _full_stack_routes_gen(project):
-    file_location = os.path.join(project.name, "app/routes/routes.py")
+    init_file_location = os.path.join(project.name, "app/routes/__init__.py")
 
-    with open(file_location, "w") as f:
+    with open(init_file_location, "w") as f:
+        f.write(f"from .routes import my_routes\n\n")
+        if project.need_auth:
+            f.write(f"from .auth import auth\n\n")
+            _auth_config(project)
+
+    resource_file_location = os.path.join(project.name, "app/routes/routes.py")
+
+    with open(resource_file_location, "w") as f:
         f.write(f"from flask import Blueprint\n\n")
         f.write(f"my_routes = Blueprint('my_routes', __name__)\n\n")
         f.write(f"""
@@ -32,6 +40,9 @@ def _api_routes_gen(project):
     with open(init_file_location, "w") as f:
         f.write(f"from flask_restful import Api \n\n\n")
         f.write(f"api = Api(prefix='/api/v1')\n\n")
+        if project.need_auth:
+            f.write(f"from .auth import auth\n\n")
+            _auth_config(project)
 
     resource_file_location = os.path.join(project.name, "app/routes/resources.py")
     with open(resource_file_location, "w") as f:
@@ -47,3 +58,19 @@ class HelloWorld(Resource):
         f.write(f"\n")
 
         f.write(f"api.add_resource(HelloWorld, '/')\n\n")
+
+
+def _auth_config(project):
+    if project.auth_type == "cookie":
+        return """
+from flask_login import LoginManager
+login_manager = LoginManager()
+            """
+
+    elif project.auth_type == "token":
+        return """
+        
+from flask_jwt_extended import JWTManager
+jwt = JWTManager()
+        
+        """

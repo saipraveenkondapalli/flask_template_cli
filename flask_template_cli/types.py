@@ -5,6 +5,9 @@ class Project:
         self._need_database = False
         self._db_type = None
         self._db_engine = None
+        self._requirements = []
+        self._need_auth = False
+        self._auth_type = None
 
     @property
     def name(self):
@@ -26,6 +29,18 @@ class Project:
     def db_type(self):
         return self._db_type
 
+    @property
+    def requirements(self):
+        return self._requirements
+
+    @property
+    def auth_type(self):
+        return self._auth_type
+
+    @property
+    def need_auth(self):
+        return self._need_auth
+
     @name.setter
     def name(self, value):
         self._name = value
@@ -45,3 +60,14 @@ class Project:
     @db_type.setter
     def db_type(self, value):
         self._db_type = value
+
+    @need_auth.setter
+    def need_auth(self, value):
+        self._need_auth = value
+
+    @auth_type.setter
+    def auth_type(self, value):
+        self._auth_type = value
+
+    def add_requirements(self, value):
+        self._requirements.append(value)
